@@ -251,7 +251,7 @@
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 6 32
 800093 12345137 67810113 20a223 40a183 310233 40a423 40a423
-800067
+2000067
 </a>
       <a name="dataWidth" val="32"/>
     </comp>
