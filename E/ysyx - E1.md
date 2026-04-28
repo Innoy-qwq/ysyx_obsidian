@@ -40,3 +40,9 @@ bug分为以下三类：
 
 虽然这早就不是你的第一个程序了，但是让我们重新回味这一时刻也有别样的风趣。
 
+过去的c开发曾用过Dev c++, Clion, VS, 以及keil和CodeBlacks。现在我们可以试一试暂时抛弃一些成熟的IDE，采用原始的gcc进行编译，vsc很适合这一工作，因为它相比sublime text功能更丰富，而相比Clion更加轻量化和自由。gcc的常用格式可以参考以下。
+
+```shell
+gcc -Wall main.c -o main
+```
+
