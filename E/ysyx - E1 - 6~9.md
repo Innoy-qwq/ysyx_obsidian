@@ -347,48 +347,56 @@ int main(void)
 }
 ```
 
-2、定义一个数组，编程打印它的全排列。
+2、
+(1) 定义一个数组，编程打印它的全排列。
 
+答：关键双循环：外部i循环和内部start循环。i循环提供了横向的每一层树的循环，start循环提供了纵向的每条通道的循环。减少i循环相当于删除一侧的通道，让每个节点的子节点减少，或者说使得一部分不参与循环。而减少start循环相当于删除一层深度，或者说减少一轮变换次数。
 ```c
 #define N 4
-#define M 3
 
 void print_arr(int a[N])
 {
-    int i = 0;
-    for (i; i < N; i++)
-        printf("%d ", a[i]);
-    printf("\n");
+	int i = 0;
+	for (i; i < N; i++)
+		printf("%d ", a[i]);
+	printf("\n");
 }
 
 void exchange(int a[N], int p1, int p2)
 {
-    int t = a[p1];
-    a[p1] = a[p2];
-    a[p2] = t;
+	int t = a[p1];
+	a[p1] = a[p2];
+	a[p2] = t;
 }
 
 void get(int a[N], int start)
 {
-    if (start == N - 1)
-    {
-        print_arr(a);
-        return;
-    }
+	if (start == N - 1)
+	{
+		print_arr(a);
+		return;
+	}
 
-    int i;
-    for (i=start; i < N; i++)
-    {
-        exchange(a, start, i);
-        get(a, start + 1);
-        exchange(a, start, i);
-    }
+	int i;
+	for (i=start; i < N; i++)
+	{
+		exchange(a, start, i);
+		get(a, start + 1);
+		exchange(a, start, i);
+	}
 }
 
 int main(void)
 {
-    int a[N] = {1, 2, 3, 4};
-    get(a, 0);
+	int a[N] = {1, 2, 3, 4};
+	get(a, 0);
 }
 ```
 
+(2) 如果再定义一个常量`M`表示从`N`个数中取几个数做排列（`N == M`时表示全排列），原来的程序应该怎么改？
+
+答：define一个M，将start循环（或者说递归？）的条件改为`start == M-1`，减少一层深度就减少了最后一轮变换，
+
+(3) 如果要求从`N`个数中取`M`个数做组合而不是做排列，就不能用原来的递归过程了，想想组合的递归过程应该怎么描述，编程实现它。
+
+答：
