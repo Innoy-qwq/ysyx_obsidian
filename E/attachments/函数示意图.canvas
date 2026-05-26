@@ -1,16 +1,17 @@
 {
 	"nodes":[
-		{"id":"3eb49d186ba000e8","type":"group","x":-460,"y":-120,"width":500,"height":840,"label":"main函数域"},
+		{"id":"3eb49d186ba000e8","type":"group","x":-240,"y":-120,"width":400,"height":800,"label":"main函数域"},
 		{"id":"f65e7f1b798129ce","type":"group","x":-145,"y":-50,"width":165,"height":290,"label":"swap函数域"},
 		{"id":"19bb8746c3ed61e7","type":"text","text":"px","x":-125,"y":-30,"width":125,"height":60,"color":"1"},
 		{"id":"b523bad580a9a193","type":"text","text":"j","x":-130,"y":480,"width":130,"height":60,"color":"5"},
 		{"id":"bdff06136b2b1ea2","type":"text","text":"i","x":-130,"y":380,"width":130,"height":60,"color":"5"},
 		{"id":"930ff8b7246e5bf9","type":"text","text":"py","x":-125,"y":60,"width":125,"height":60,"color":"1"},
 		{"id":"f93f9c6e014f6622","type":"text","text":"temp","x":-125,"y":160,"width":125,"height":60,"color":"5"},
-		{"id":"0905728fe4629317","x":-130,"y":580,"width":130,"height":60,"color":"1","type":"text","text":"p"}
+		{"id":"0905728fe4629317","type":"text","text":"p","x":-130,"y":580,"width":130,"height":60,"color":"1"}
 	],
 	"edges":[
 		{"id":"f2348c4b5ceb16f1","fromNode":"19bb8746c3ed61e7","fromSide":"right","toNode":"bdff06136b2b1ea2","toSide":"right"},
-		{"id":"83275bb30fce6855","fromNode":"930ff8b7246e5bf9","fromSide":"right","toNode":"b523bad580a9a193","toSide":"right"}
+		{"id":"83275bb30fce6855","fromNode":"930ff8b7246e5bf9","fromSide":"right","toNode":"b523bad580a9a193","toSide":"right"},
+		{"id":"ba7702caa4a5d359","fromNode":"0905728fe4629317","fromSide":"left","toNode":"bdff06136b2b1ea2","toSide":"left"}
 	]
 }
