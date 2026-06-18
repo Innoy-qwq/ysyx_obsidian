@@ -62,4 +62,3 @@ int main(int argc, char *argv[])
 exit(EXIT_FALURE)就相当于退出. 
 
 
-
