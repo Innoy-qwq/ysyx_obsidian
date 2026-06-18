@@ -61,4 +61,94 @@ int main(int argc, char *argv[])
 
 exit(EXIT_FALURE)就相当于退出. 
 
+#### 习题:
 
+1、出于练习的目的，`strtok`和`strtok_r`函数非常值得自己动手实现一遍，在这个过程中不仅可以更深刻地理解这两个函数的工作原理，也为以后理解“可重入”和“线程安全”这两个重要概念打下基础。
+
+>答: 代码如下. 
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+
+int if_delim(char c, const char *delim){
+    while (*delim){
+        if (c == *delim) return 1;
+        delim++;
+    }
+    return 0;
+}
+
+
+char *my_strtok(char *str, const char *delim){
+    static char *next = NULL;
+
+    if (str==NULL) str = next;
+    else next = str;
+
+    if (!str) return NULL; /*考虑用户可能调用不规范, 首次调用str填了NULL*/
+    
+    while (*next){
+        if (if_delim(*next, delim)){
+            *next = '\0';
+            next++;
+            return str;
+        }
+        next++;
+    }
+
+    next = NULL;
+    return str;
+}
+
+
+char *my_strtok_r(char *str, const char *delim, char **saveptr){
+    if (str==NULL) str = *saveptr;
+    else (*saveptr) = str;
+
+    if (!str) return NULL; /*考虑用户可能调用不规范, 首次调用str填了NULL*/
+    
+    while (**saveptr){
+        if (if_delim(**saveptr, delim)){
+            **saveptr = '\0';
+            (*saveptr)++;
+            return str;
+        }
+        (*saveptr)++;
+    }
+
+    *saveptr = NULL;
+    return str;
+}
+
+
+int main(void){
+    char a[40] = "hello`str*tok";
+    char *save;
+
+    char *test = my_strtok_r(a, "`*", &save);
+    printf("%s\n", test);
+    test = my_strtok_r(NULL, "`*", &save);
+    printf("%s\n", test);
+    test = my_strtok_r(NULL, "`*", &save);
+    printf("%s\n", test);
+}
+```
+
+2、解析URL中的路径和查询字符串。动态网页的URL末尾通常带有查询，例如：
+
+```
+http://www.google.cn/search?complete=1&hl=zh-CN&ie=GB2312&q=linux&meta=  
+http://www.baidu.com/s?wd=linux&cl=3
+```
+
+比如上面第一个例子，`http://www.google.cn/search`是路径部分，?号后面的`complete=1&hl=zh-CN&ie=GB2312&q=linux&meta=`是查询字符串，由五个“key=value”形式的键值对（Key-value Pair）组成，以&隔开，有些键对应的值可能是空字符串，比如这个例子中的键`meta`。
+
+现在要求实现一个函数，传入一个带查询字符串的URL，首先检查输入格式的合法性，然后对URL进行切分，将路径部分和各键值对分别传出，请仔细设计函数接口以便传出这些字符串。如果函数中有动态分配内存的操作，还要另外实现一个释放内存的函数。完成之后，为自己设计的函数写一个Man Page。
+
+>答: 代码如下
+
+```c
+
+```
