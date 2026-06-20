@@ -150,5 +150,24 @@ http://www.baidu.com/s?wd=linux&cl=3
 >答: 代码如下
 
 ```c
+char *my_strtok(char *str, const char *delim){
+    static char *next = NULL;
 
+    if (str==NULL) str = next;
+    else next = str;
+
+    if (!str) return NULL; /*考虑用户可能调用不规范, 首次调用str填了NULL*/
+    
+    while (*next){
+        if (if_delim(*next, delim)){
+            *next = '\0';
+            next++;
+            return str;
+        }
+        next++;
+    }
+
+    next = NULL;
+    return str;
+}
 ```
