@@ -198,3 +198,20 @@ int main(){
     }
 }
 ```
+
+>man如下
+
+```
+NAME 
+	parseURL
+SYNOPSIS 
+	char *parseURL(char *URL, char **saveptr);
+DESCRIPTION
+	parseURL() splits a URL string into tokens using the delimiters  
+'?' and '&'.The first call should provide the URL string in the url argument.
+Subsequent calls should pass NULL as url while preserving the
+saveptr value between calls.
+
+The input string is modified in place. Delimiter characters are
+replaced with '\0' terminators.
+```
