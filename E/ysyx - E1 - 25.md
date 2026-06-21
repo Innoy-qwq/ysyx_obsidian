@@ -215,3 +215,28 @@ saveptr value between calls.
 The input string is modified in place. Delimiter characters are
 replaced with '\0' terminators.
 ```
+
+---
+### 标准IO库函数
+
+文件分为文本文件和二进制文件, 文本文件的内容遵循某种文本编码, 这容易理解
+
+>用Vi编辑文本文件, 最后会留一个换行符. 比如你输入1234, 长度会是5.
+
+然后看od命令和各个参数: 
+
+```shell
+$ od -tx1 -tc -Ax textfile 
+000000 35 36 37 38 0a
+	    5  6  7  8 \n
+000005
+```
+
+`-exl`: 将内容以16进制的形式列出来. 
+`-tc`: 以ASCII码表示
+`-Ax`: 以16进制显示地址
+
+在Linux中一切皆文件, 设备同样作为文件进行管理, 这在我们写printf函数的时候就应当知道了, 毕竟参数里要跟上"stdout", 这也相当于是文件. 
+
+
+
