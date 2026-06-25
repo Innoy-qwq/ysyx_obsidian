@@ -238,5 +238,73 @@ $ od -tx1 -tc -Ax textfile
 
 在Linux中一切皆文件, 设备同样作为文件进行管理, 这在我们写printf函数的时候就应当知道了, 毕竟参数里要跟上"stdout", 这也相当于是文件. 
 
+`errno`的作用可直接从man读得: 
 
+```
+       For some system calls and library functions (e.g., getpriority(2)), -1 is a valid return on success.  In such cases, a successful return can be distinguished from an error
+       return by setting errno to zero before the call, and then, if the call returns a status that indicates that an error may have occurred, checking to  see  if  errno has a nonzero value.
+       errno is defined by the ISO C standard to be a modifiable lvalue of type int, and must not be explicitly declared; errno may be a macro.  errno is thread-local; setting it in one thread does not affect its value in any other thread.
+```
+
+当你的函数-1属于正常的返回值, 那把-1作为异常返回值就不行了. 这个时候就需要errno变量. errno变量你首先自行置零, 等到清楚出现错误你就将其赋值-1, 由于是全局变量所以你在其他地方也可以做这个读取. 
+
+但是注意最后一段说明`errno`是线程隔离的全局变量, 意味着在每个线程中, `errno`是独立可用的.
+
+`perror`用于打印错误, 本质上就是查找error的值作为index, 然后去某个表里找出来, 再和参数`const char *s`拼接. 
+
+#### 习题
+
+1、在系统头文件中找到各种错误码的宏定义。
+
+```
+/usr/include/asm-generic/errno-base.h
+```
+
+> 这是根据vsc的查询, 一步步找到的宏定义文件路径
+
+
+2、做几个小练习，看看`fopen`出错有哪些常见的原因。
+
+```
+No such file or directory
+Permission denied
+Is a directory
+```
+
+---
+
+#### 习题
+
+1、编写一个简单的文件复制程序。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void copyfile(char *file_A, char *file_B){
+    FILE *fp1;
+    FILE *fp2;
+    int ch;
+    if ((fp1 = fopen(file_A, "r")) == NULL){
+        perror("open file fp1 error");
+        exit(1);
+    }
+    if ((fp2 = fopen(file_B, "w+")) == NULL){
+        perror("open file fp2 error");
+        exit(1);
+    }
+    while ((ch = fgetc(fp1)) != EOF)
+    {
+        fputc(ch, fp2);
+    }
+    fclose(fp1);
+    fclose(fp2);
+}
+
+int main(){
+    copyfile("file_a", "file_b");
+}
+```
+
+2、虽然我说`getchar`要读到换行符才返回，但上面的程序并没有提供证据支持我的说法，如果看成每敲一个键`getchar`就返回一次，也能解释程序的运行结果。请写一个小程序证明`getchar`确实是读到换行符才返回的。
 
