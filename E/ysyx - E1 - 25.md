@@ -289,7 +289,7 @@ void copyfile(char *file_A, char *file_B){
         perror("open file fp1 error");
         exit(1);
     }
-    if ((fp2 = fopen(file_B, "w+")) == NULL){
+    if ((fp2 = fopen(file_B, "w")) == NULL){
         perror("open file fp2 error");
         exit(1);
     }
