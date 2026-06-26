@@ -232,7 +232,7 @@ $ od -tx1 -tc -Ax textfile
 000005
 ```
 
-`-exl`: 将内容以16进制的形式列出来. 
+`-txl`: 将内容以16进制的形式列出来. 
 `-tc`: 以ASCII码表示
 `-Ax`: 以16进制显示地址
 
@@ -266,9 +266,10 @@ $ od -tx1 -tc -Ax textfile
 2、做几个小练习，看看`fopen`出错有哪些常见的原因。
 
 ```
-No such file or directory
-Permission denied
-Is a directory
+No such file or directory - 无文件
+Permission denied - 无权限
+Is a directory - 非文件
+Text file busy - 权限冲突
 ```
 
 ---
@@ -307,4 +308,76 @@ int main(){
 ```
 
 2、虽然我说`getchar`要读到换行符才返回，但上面的程序并没有提供证据支持我的说法，如果看成每敲一个键`getchar`就返回一次，也能解释程序的运行结果。请写一个小程序证明`getchar`确实是读到换行符才返回的。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+	FILE *fp;
+	int ch;
+
+	if ( (fp = fopen("file2", "w+")) == NULL) {
+		perror("Open file file2\n");
+		exit(1);
+	}
+	while ( (ch = getchar()) != EOF){
+		fputc(ch, fp);
+        rewind(fp);
+        while ( (ch = fgetc(fp)) != EOF)
+		    putchar(ch);
+    }
+	fclose(fp);
+	return 0;
+}
+```
+
+结果: 
+
+```
+abcd
+aababcabcdabcd
+```
+
+这段代码在运行过程中验证了换行符才返回. 因为如果不换行就会被输入, 那么应当在你输入`abcd`过程中, 后续就应当直接运行保存和打印程序, 但事实上是换行之后, 终端字符才被打印getchar一点一点读取搬运. 打印出来`aababcabcdabcd`, 最后接了一个`\n`
+#### 习题
+
+1、用`fgets`/`fputs`写一个拷贝文件的程序，根据本节对`fgets`函数的分析，应该只能拷贝文本文件，试试用它拷贝二进制文件会出什么问题。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int my_copy_made_by_fgets(char *file_src, char *file_dest){
+    FILE *fp1;
+    FILE *fp2;
+    char *buffer = malloc(10);
+    
+    if ((fp1 = fopen(file_src, "r")) == NULL){
+        perror("open file src");
+        exit(1);
+    }
+
+    if ((fp2 = fopen(file_dest, "w")) == NULL){
+        perror("open file dest");
+        exit(1);
+    }
+
+    while (fgets(buffer, 10, fp1) != NULL)
+    {
+        fputs(buffer, fp2);
+    }
+    
+    free(buffer);
+    fclose(fp1);
+    fclose(fp2);
+
+    return 0;
+}
+
+int main(){
+    my_copy_made_by_fgets("file_a", "file_b");
+}
+```
 
