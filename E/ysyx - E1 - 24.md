@@ -470,7 +470,7 @@ x86的参数栈是从高地址往低地址生长的, 也就是说+8, +4, 到0的
 
 **EBP**：基址指针寄存器(extended base pointer)
 **ESP**：栈指针寄存器(extended stack pointer)
-**VMA**: 虚拟内存区域(virtual memory area) 用于记录虚拟内存的读写权限等性质. 
+**VMA**: 虚拟内存区域(virtual memory area) 用于记录虚拟内存的读写权限等性质.  ^ceda97
 
 ```
 # 虚拟地址空间, 每个进程都有自己的虚拟内存地址空间, 程序在这里被存放和运行 ↓ 

@@ -383,3 +383,88 @@ int main(){
 
 `fputs`会在遇到字符串结尾`\0`时停止写文件, 只适合文本文件. 可以考虑用`fwrite`. 
 
+---
+
+`printf`和`scanf`也不多提了. 重点看一下缓冲. 
+
+全缓冲
+
+如果缓冲区写满了就写回内核。常规文件通常是全缓冲的。
+
+行缓冲
+
+如果用户程序写的数据中有换行符就把这一行写回内核，或者如果缓冲区写满了就写回内核。标准输入和标准输出对应终端设备时通常是行缓冲的。
+
+无缓冲
+
+用户程序每次调库函数做写操作都要通过系统调用写回内核。标准错误输出通常是无缓冲的，这样用户程序产生的错误信息可以尽快输出到设备。
+
+> 这个缓冲区究竟是什么? 我们在之前提到过，一个进程建立的时候，系统会给它分一块虚拟内存，其中就包含.data, heap, stack等部分 [[ysyx - E1 - 24#^ceda97| -> 详情查看E1 - 24]]. 
+> 而缓冲区buffer其实就是个char数组, 它被libc在程序启动时建立. 在实现的时候，可以放到堆heap或者静态区.bss之类的。但总之，这是一个相对于虚拟内存来说更抽象一层的东西, 要求是这样一个要求，实现的话，你可以自行去放在哪都行，满足要求就可以。甚至使用`setvbuf`函数可以自己设置buffer. 
+
+本节结尾, 这一节学习了很多IO相关的函数, 整理一下: 
+
+rewind : 读写位置回到开头
+fseek : 读写位置移动特定偏移
+ftell : 回到当前读写位置
+
+fgetc : 从指定文件读一个字节, getchar相当于fgetc(stdin)
+fputc : 给指定文件写入一个字节， putchar相当于fputc(c, stdout)
+
+fgets : 从指定文件读取一行到缓冲区
+fputs : 给指定文件写入字符串, 注意fgets是按行读, 但fputs不是按行写的
+
+fprintf : 按格式打印到指定文件
+fscanf : 从指定文件按格式读取
+
+前缀带f : 处理文件
+前缀带s : 使用人工buffer
+前缀带n : 限制目标长度
+前缀带v : 使用va_list
+
+#### 2.11. 本节综合练习
+
+1、编程读写一个文件`test.txt`，每隔1秒向文件中写入一行记录
+
+> 代码如下. 其实到这里, 比如time(2)这样的函数我不是很清楚, 自然就去查man了, 也算是养成习惯了.
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+#define start_year 1900
+
+int write_time(){
+    time_t time_now;
+    struct tm *t;
+    FILE *fp;
+    
+    if ((fp = fopen("test.txt", "a+")) == NULL){
+        perror("open file src");
+        exit(1);
+    }
+
+    while(1){
+        time_now = time(NULL);
+        t = localtime(&time_now);
+        fprintf(fp, "%d-%.2d-%.2d %.2d:%.2d:%.2d\n", t->tm_year+start_year, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+        fflush(fp);
+        sleep(1);
+    }
+}
+
+int main(int argc, char *argv[]){
+    write_time();
+}
+```
+
+2、现在要求编程把INI文件转换成XML文件。
+
+>代码如下, 容易想到这种情况需要用栈结构. 
+
+```c
+
+```
+
