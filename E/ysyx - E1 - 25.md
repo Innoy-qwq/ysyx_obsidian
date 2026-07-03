@@ -411,7 +411,7 @@ ftell : 回到当前读写位置
 fgetc : 从指定文件读一个字节, getchar相当于fgetc(stdin)
 fputc : 给指定文件写入一个字节， putchar相当于fputc(c, stdout)
 
-fgets : 从指定文件读取一行到缓冲区
+fgets : 从指定文件读取一行到缓冲区, 或者达到满缓冲. 
 fputs : 给指定文件写入字符串, 注意fgets是按行读, 但fputs不是按行写的
 
 fprintf : 按格式打印到指定文件
@@ -462,11 +462,82 @@ int main(int argc, char *argv[]){
 
 2、现在要求编程把INI文件转换成XML文件。
 
->代码如下. 值得注意的是, 容易想到这种字符串解析需要考虑安全问题, 一些异常的字符串注入可能导致解析结果出现问题.
+>代码如下. 值得注意的是, 容易想到这种字符串解析需要考虑安全问题, 一些异常的字符串注入可能导致解析结果出现问题. 但这里感觉暂时还不用考虑. 
 >这里主要是要对标识符的开始条件和结束条件进行分析. 注意这里是有优先级的, 也就是说位于下侧的判断, 自带一个额外的要求, 那就是不满足前方判断的条件.
+>
 >注释语句的开始条件是在行开头检测到符号`;`, 结束条件是达到本行末尾. 
->Section的开始条件是在句首检测到`[`, 结束条件是本行遇到`]`符号, 若检测不到则进行异常反馈. 
+>Section的开始条件是在句首检测到`[`, 结束条件是空行或者文件结尾. 
 >键值对的开始条件是出现`=`, 于是将前面切分为键, 后方切分为值.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*将INI文件转换为XML文件*/
+int INI2XML(FILE *src, FILE *dst){
+    FILE *fp1 = src;
+    FILE *fp2 = dst;
+    char buffer[256];
+    char key_str [256];
+    char section[256];
+    char *key_value_flag;
+
+    while(fgets(buffer, sizeof(buffer), fp1) != NULL){
+        if(strchr(buffer,'\n') || feof(fp1)){
+            if (buffer[0] == ';'){
+                sscanf(buffer, ";%[^\n]", key_str);
+                fprintf(fp2, "<!-- %s -->\n", key_str);
+            }
+            else if (buffer[0] == '['){
+                strncpy(key_str, buffer+1, strlen(buffer)-3);  // 截断']', '\n', '\0'
+                key_str[strlen(buffer)-3] = '\0';
+                fprintf(fp2, "<%s>\n", key_str);
+                strcpy(section, key_str);
+            }
+            else if (key_value_flag = strchr(buffer, '='))
+            {
+                buffer[strlen(buffer)-1] = '\0';
+                strncpy(key_str, buffer, key_value_flag - buffer);
+                key_str[key_value_flag - buffer] = '\0';
+                fprintf(fp2, "\t<%s>%s</%s>\n", key_str, key_value_flag+1, key_str);
+            }
+            else if (buffer[0] == '\n'){
+                fprintf(fp2, "</%s>\n", section);
+                fprintf(fp2, "\n");
+            }
+        }
+        else{
+            perror("单行字符数量超出可用范围");
+            exit(1);
+        }
+    }
+    fprintf(fp2, "</%s>\n", section);
+}
+
+
+int main(char argc, char *argv[]){
+    FILE *fp1;
+    FILE *fp2;
+    
+    if ((fp1 = fopen("test.ini", "r"))==NULL){
+        perror("open ini error");
+        exit(1);
+    }
+
+
+    if ((fp2 = fopen("test.xml", "w"))==NULL){
+        perror("open xml error");
+        exit(1);
+    }
+
+    INI2XML(fp1, fp2);
+}
+```
+
+3、实现类似`gcc`的`-M`选项的功能，给定一个`.c`文件，列出它直接和间接包含的所有头文件.
+
+> 代码如下. 
 
 ```c
 
