@@ -187,7 +187,7 @@ int main(void)
 >代码如下：
 
 ```c
-// 此处只展示函数，运行示例参考文件struct_qe.c
+// 此处只展示函数，运行示例参考文件 t7_2_1.c
 
 int printStruct(struct complex_struct z){ // 复数运算层
 
@@ -204,7 +204,7 @@ int printStruct(struct complex_struct z){ // 复数运算层
 
 2、实现一个用分子分母的格式来表示有理数的结构体`rational`以及相关的函数，`rational`结构体之间可以做加减乘除运算，运算的结果仍然是`rational`。注意要约分为最简分数，例如1/8和-1/8相减的打印结果应该是1/4而不是2/8，可以利用[第 3 节 “递归”](https://akaedu.github.io/book/ch05s03.html#func2.recursion)练习题中的Euclid算法来约分。在动手编程之前先思考一下这个问题实现了什么样的数据抽象，抽象层应该由哪些函数组成。
 
->答：代码见文件struct_qe2.c
+>答：代码见文件 t7_2_2.c
 
 ### 数据类型标志
 
